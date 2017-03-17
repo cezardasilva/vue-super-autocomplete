@@ -1,4 +1,4 @@
-<style lang="scss">
+<style scoped lang="scss">
 .autocomplete{
 
 	$border-color: #e1e6ed;

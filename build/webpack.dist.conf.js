@@ -1,17 +1,56 @@
 var path = require('path')
 var webpack = require('webpack')
-var HtmlWebpackPlugin = require('html-webpack-plugin');
+var ExtractTextPlugin = require("extract-text-webpack-plugin")
 
 
-var baseWebpackConfig = require('./webpack.base.conf')
-var merge = require('webpack-merge')
-var HtmlWebpackPlugin = require('html-webpack-plugin')
-var FriendlyErrors = require('friendly-errors-webpack-plugin')
-
-
-var webpackConfig = merge(baseWebpackConfig, {
+var webpackConfig = {
 	entry: {
-		app: './src/index.js'
+		"vue-super-autocomplete": './src/index.js'
+	},
+	output: {
+		path: './dist',
+		publicPath: '/dist/',
+		filename: "[name].js",
+		library: "VueSuperAutocomplete",
+		libraryTarget: "umd"
+	},
+	module: {
+		rules: [
+			{
+				test: /\.vue$/,
+				loader: 'vue-loader',
+				options: {
+					loaders: {
+						'scss': 'vue-style-loader!css-loader!sass-loader',
+						//'sass': 'vue-style-loader!css-loader!sass-loader?indentedSyntax',
+						css: ExtractTextPlugin.extract({
+							use: 'css-loader',
+							fallback: 'vue-style-loader' // <- this is a dep of vue-loader, so no need to explicitly install if using npm3
+						})
+					}
+				}
+			},
+			{
+				test: /\.js$/,
+				exclude: /node_modules/,
+				use: [
+					"babel-loader",
+					"eslint-loader"
+				]
+			},
+			{
+				test: /\.(png|jpg|gif|svg)$/,
+				loader: 'file-loader',
+				options: {
+					name: '[name].[ext]?[hash]'
+				}
+			}
+		]
+	},
+	resolve: {
+		alias: {
+			'vue$': 'vue/dist/vue.esm.js'
+		}
 	},
 	plugins: [
 		new webpack.DefinePlugin({
@@ -29,7 +68,8 @@ var webpackConfig = merge(baseWebpackConfig, {
 		}),
 		new webpack.LoaderOptionsPlugin({
 			minimize: true
-		})
+		}),
+		new ExtractTextPlugin("vue-super-autocomplete.css")
 	]
-})
+}
 module.exports = webpackConfig

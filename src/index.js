@@ -1,2 +1,1 @@
-const SuperAutocomplete = require('./components/SuperAutocomplete.vue')
-module.exports = SuperAutocomplete
+module.exports = require('./components/SuperAutocomplete.vue')
